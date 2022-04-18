@@ -1,0 +1,13 @@
+pytest
+pylint
+jupyter
+jupyterlab
+pytest-cov
+pandas 
+click
+flask
+requests
+google-cloud-bigquery
+matplotlib
+seaborn
+ 
