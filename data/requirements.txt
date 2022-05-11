@@ -1,0 +1,8 @@
+Flask
+gunicorn
+yfinance
+pyodbc
+pandas
+getpass4
+matplotlib
+requests
