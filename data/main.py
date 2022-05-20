@@ -1,14 +1,12 @@
-from ast import arg
-import os, sys, json
-from posixpath import split
-import requests
-import datetime
+import os, sys, json, gc
+import datetime, time
 import pandas as pd
-from matplotlib.font_manager import json_dump
 import yfinance as yf
 import pyodbc
-from flask import Flask, request, Response, stream_with_context
-from getpass4 import getpass
+import markdown
+from flask import Flask, Response, request
+
+gc.enable()
 
 app = Flask(__name__)
 
@@ -31,12 +29,12 @@ def list_sp500():
     df_sp500 = first_table.convert_dtypes()
     return df_sp500
 
-def load_from_df(sql_table_name, df: pd.DataFrame):
+def load_from_df(sql_table_name, data: pd.DataFrame):
     '''Loads data to SQL server from dataframe
     '''
-    df = df.fillna(0)
-    df.index.names = ['ticker']
-    df.convert_dtypes()
+    if data.shape[0] ==0: return f"no data in df to load"
+    df = data.copy(deep=True)
+    df = df.fillna('0')
 
     # create cursor and set fast execute property
     cursor = connect_db()
@@ -55,9 +53,10 @@ def load_from_df(sql_table_name, df: pd.DataFrame):
 
     # select columns from dataframe that are in the sql table
     common_cols = set(col_list) & set(df.columns.to_list())
-    print('COMMON COLS:',common_cols)
+    print('  COMMON COLS:', list(common_cols))
     col_count = len(common_cols)
-    df = df[common_cols]
+    df = df[list(common_cols)]
+    print('   First Row of Dataframe:', dict(df.iloc[0]))
 
     # vals is list of question marks for each column for insert stmnt
     vals = ('?,' *(col_count -1) ) + '?'
@@ -69,23 +68,98 @@ def load_from_df(sql_table_name, df: pd.DataFrame):
     # insert rows
     try:
         cursor.executemany(insert_tbl_stmt, df.values.tolist())
-        cursor.commit()
         print(f'   {len(df)} rows inserted into {sql_table_name} table', datetime.datetime.now())
     except BaseException as err:
-        print(f"   Unexpected {err}, {type(err)}")
+        print(f"   Unexpected {err}, {type(err)} in load_from_df")
+        print(f"   Error on df values", str(df.head(1)))
     finally:
+        cursor.commit()
         cursor.close()
-    
-    return 'Completed load_ticker_info ' + df["ticker"][0] + str(datetime.datetime.now())
+        del df
+    gc.collect()
+
+    return f'Completed loading {sql_table_name} ' + str(datetime.datetime.now())
+
+def merge_price_history(where_clause):
+    '''copies data from tmp table to main table, only if not already present
+    '''
+    # create cursor and set fast execute property
+    cursor = connect_db()
+
+    # insert all the rows from tmp table that are not in main table.
+    qry = f'''INSERT [dbo].[price_history]
+        SELECT price_history_tmp.*
+        FROM [dbo].[price_history_tmp] price_history_tmp
+        LEFT OUTER JOIN [dbo].[price_history] ph
+            ON price_history_tmp.ticker=ph.ticker and price_history_tmp.[Datetime]=ph.[Datetime] 
+        {where_clause} and ph.ticker is null'''
+    cursor.execute(qry)
+    rowcount = cursor.rowcount
+    cursor.commit()
+    cursor.close()
+
+    print(f' {rowcount} rows inserted to price_history')
+
+def delete_table(sql_table_name, where_clause):
+    '''deletes rows from a table using supplied WHERE clause
+    '''
+    # create cursor, execute the stmnt
+    cursor = connect_db()
+    qry = f'''DELETE {sql_table_name} {where_clause} '''
+    cursor.execute(qry)
+    rowcount = cursor.rowcount
+    cursor.commit()
+    cursor.close()
+
+    print(f' {rowcount} rows deleted from {sql_table_name}:')
+
+def dump_table_to_stream(table='INFORMATION_SCHEMA.COLUMNS', where='WHERE TRUE', format='csv'):
+    '''returns all data in table with optional where clause
+    '''
+    print( table, where, format)
+    # create cursor, execute the stmnt
+    conn = pyodbc.connect(conn_string)
+    qry = f'''select * FROM {table} {where} '''
+    sql_query = pd.read_sql_query(qry, conn)
+
+    df = pd.DataFrame(sql_query)
+    if (format=='json'):
+        return df.to_json(index=False, orient='split')
+    else:
+        return df.to_csv(index=False, header=True)
+
+def truncate_table(sql_table_name):
+    '''truncates a table, obviously
+    '''
+    # create cursor, execute the stmnt
+    cursor = connect_db()
+    qry = f'''TRUNCATE TABLE {sql_table_name} '''
+    cursor.execute(qry)
+    row = cursor.fetchone()
+    result = str(row[0])
+
+    print(f'  truncated table {sql_table_name}:' + str(result))
+
+################################################################ APP ROUTES START HERE
 
 @app.route("/")
 def hello_world():
     name = os.environ.get("NAME", "World")
     return "Hello {}!".format(name)
 
+@app.route("/readme", methods=['GET'])
+def readme():
+    md_template_string = markdown.markdown(
+        open('README.md',mode='r').read(), extensions=["fenced_code"]
+    )
+    return md_template_string
+
 @app.route("/env")
 def dump_env():
-    return json.dumps(dict(os.environ),indent=2)
+    try:
+        return json.dumps(dict(os.environ),indent=2)
+    finally:
+        gc.collect()
 
 @app.route("/test_conn")
 def test_conn():
@@ -141,12 +215,69 @@ def load_ticker_info():
             continue
             
         df.index.names = ['ticker']
+        df = df.copy()
         df = df.convert_dtypes()
-        df.to_csv('tmp.csv')
-        df = pd.read_csv('tmp.csv')
-        load_from_df('ticker_info', df)
+        # this dump to csv cleans up some formatting problems
+        fname = f'{time.time_ns()}_tmp.csv'
+        df.to_csv(fname)
+        df = pd.read_csv(fname)
+        load_from_df('ticker_info', df.copy(deep=True))
+        os.remove(fname)
+        del df
 
+    gc.collect()
     return '\nFinished ' + str(args) + ' at ' + str(datetime.datetime.now())
+
+@app.route("/load_price_history", methods=['GET'])
+def load_price_history():
+    # Get data from query strings
+    args = request.args.to_dict()
+    tickers = args.get("ticker").split("|")
+    print("args:" + str(args))
+
+    where_clause =  str(tickers).replace("[","").replace("]","")
+    where_clause = f"WHERE price_history_tmp.ticker in ({where_clause})" 
+    delete_table('price_history_tmp', where_clause)
+
+    # load the tmp table, then compare to main table and insert the new rows
+    # some options here https://stackoverflow.com/questions/63107594/
+    # how-to-deal-with-multi-level-column-names-downloaded-with-yfinance/63107801#63107801
+    for t in tickers:
+        df = pd.DataFrame()
+        # ticker info
+        try:
+            df = yf.download(t, period="1mo", interval="5m", auto_adjust=True)
+        except BaseException as err:
+            print(f"Unexpected {err}, {type(err)} on {t} in load_price_history")
+            
+        df['ticker']= t
+        df.reset_index(inplace=True)
+        load_from_df('price_history_tmp', df)
+        del df
+        gc.collect()
+    
+    merge_price_history(where_clause)
+    delete_table('price_history_tmp', where_clause)
+
+    gc.collect()
+    return '\nFinished ' + str(args) + ' at ' + str(datetime.datetime.now())
+
+@app.route("/dump_table", methods=['GET'])
+def dump_table():
+    # Get data from query strings
+    args = request.args.to_dict()
+    print("GET /dump_table?args:" + str(args))
+    table, where, format = args.get("table"), args.get("where"), args.get("format")
+    if table==None: table='INFORMATION_SCHEMA.COLUMNS'
+    if where==None: where='WHERE 1=1'
+    if format==None: format='csv'
+    table_data = dump_table_to_stream(table=table, where=where, format=format)
+    if (format=='csv'):
+        return Response(str(table_data), mimetype='text/csv')
+    elif (format=='json'):
+        return Response(str(table_data), mimetype='application/json')
+    else:
+        return "ERROR: format parameter mustbe either csv or json"
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

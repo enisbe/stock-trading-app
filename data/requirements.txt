@@ -1,4 +1,7 @@
 Flask
+matplotlib
+scipy
+markdown
 gunicorn
 yfinance
 pyodbc
