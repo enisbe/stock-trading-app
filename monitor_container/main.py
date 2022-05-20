@@ -17,7 +17,7 @@ LOG.setLevel(logging.INFO)
 key  = os.environ.get("DB_KEY")
 
 
-@app.route('/2fe166058a900f44fc5e237f2c49bf50',methods=['POST','GET'])
+@app.route('/update_account',methods=['GET'])
 def update_account():
     """ Update Accounts"""
     
@@ -47,7 +47,7 @@ def update_account():
             "response": str(e)
         }  
 
-@app.route('/aac13468b20a3cf70605f9b0863c17f9',methods=['POST','GET'])
+@app.route('/activities',methods=['POST','GET'])
 def update_activities():
     """ Predict route. Only Handles POST requests"""
     
@@ -83,7 +83,7 @@ def update_activities():
  
 
 
-@app.route('/16886e9e65f16596591fa8e18cce7605', methods=['POST'])
+@app.route('/target_execution', methods=['POST'])
 def target_execution():
     """ Target Execution"""
     
@@ -114,7 +114,7 @@ def target_execution():
                     "response": "access denied"
                 }
  
-        dbops.write_target_execution_2db(target_execution, custom_tag)
+        dbops.write_target_execution_2db(target_execution)
     
         return {
                 "code": '200',
@@ -127,9 +127,46 @@ def target_execution():
         }  
 
 
+    
+
+@app.route('/history', methods=['GET'])
+def history():
+    """ Target Execution"""
+    
+    LOG.info("|--Function Called")    
+    LOG.info("\t|--Updating History")
+    
+    try: 
+        passed_key = request.args.get('db_key',default="1", type=str)
+        if passed_key != key:
+            return {
+                    "code": '401',
+                    "response": "access denied"
+                }
+        
+        timeframe = request.args.get('timeframe',default='15Min', type=str)
+        days = request.args.get('days',default=1, type=int)
+        days = max(min(days,7),1)
+        LOG.info(f"\t|--Dowloading history for {days} days")
+
+
+        dbops.write_history(timeframe=timeframe, days=days)
+
+        return {
+        "code": '200',
+        "response": "update_activities success"
+        }
+    
+    except Exception as e:
+        return {
+            "code": '400',
+            "response": str(e)
+        }  
+    
+    
 if __name__ == '__main__':
     # This is used when running locally. Gunicorn is used to run the
     # application on Google App Engine. See entrypoint in app.yaml.
    
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get("PORT")))   
- 
+    # app.run(debug=True, host='0.0.0.0', port=int(os.environ.get("PORT")))   
+    app.run(debug=True, host='0.0.0.0', port=5051)   

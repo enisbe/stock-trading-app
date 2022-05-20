@@ -5,9 +5,7 @@ import os
 cloud_run = True
 linux = True
 
-ROUTE_ACTIVITIES = 'aac13468b20a3cf70605f9b0863c17f9'
-ROUTE_ACCOUNT = '2fe166058a900f44fc5e237f2c49bf50'
-ROUTE_EXECUTION = '16886e9e65f16596591fa8e18cce7605'
+ 
 
 if cloud_run:
     from google.cloud import secretmanager
@@ -34,9 +32,9 @@ else:
         secrets =   json.load(f)
 
     if linux:        
-        AZURE_CONNECTION_STRING =  secrets['AZURE_CONNECTION_STRING_LINUX']
+        AZURE_CONNECTION_STRING =  secrets['AZURE_CONNECTION_STRING_LINUX2']
     else:
-        AZURE_CONNECTION_STRING =  secrets['AZURE_CONNECTION_STRING_WINDOWS']
+        AZURE_CONNECTION_STRING =  secrets['AZURE_CONNECTION_STRING_WINDOWS2']
 
     KEY_ID = secrets['KEY_ID']
     SECRET_KEY = secrets['SECRET_KEY']
