@@ -11,7 +11,7 @@ This directory contains ETL routines to pull data from Yahoo Finance and load to
   - [sp500_ddl.sql](sp500_ddl.sql) - holds S&P 500 ticker list.
   - [ticker_info_ddl.sql](ticker_info_ddl.sql) - very wide table with detailed attributes/metrics for each ticker.
   - [price_history_ddl.sql](price_history_ddl.sql) - historical table with date/high/low/close info for each time period (5 min)
-  - [price_history_tmp_ddl.sql](price_history_tmp_ddl.sql) - tmp transactional table with date/high/low/close info. This table is loaded every 5 min with a day's worth of data, then a merge_history function called to upsert rows into the main history table. An [idempotent](https://en.wikipedia.org/wiki/Idempotence) fault tolerant process.
+  - [price_history_tmp_ddl.sql](price_history_ddl.sql) - tmp transactional table with date/high/low/close info. This table is loaded every 5 min with a day's worth of data, then a merge_history function called to upsert rows into the main history table. An [idempotent](https://en.wikipedia.org/wiki/Idempotence) fault tolerant process.
 - run gcloud init to authorize account and set default project/region
 - deploy using "gcloud run deploy yahoosp500etl --source ." from source directory. This will build and deploy container in artifact registry on GCP.
 - Add a secret called "AZURE_CONN_STRING" to secret manager: https://cloud.google.com/run/docs/configuring/secrets
