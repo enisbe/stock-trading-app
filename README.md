@@ -32,12 +32,10 @@ TODO
 TODO
 
 
-## Rebalance
------
-
-
 
 Rebalance and Monitoring
 -----
+
+TODO
 
 <img src="./images/rebalance-process.png" alt="Front end GUI"> 
