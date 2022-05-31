@@ -13,9 +13,11 @@ Deploy application command:
 ```
 gcloud run deploy db-ops --set-env-vars PROJECT_NUMBER=$PROJECT_NUMBER  --set-env-vars DB_KEY=$DB_KEY --platform managed --allow-unauthenticated --region us-central1 --source  . 
 ```
-TODO: 
 
-* Add gcloud CLI commands for cloud scheduler to that run periodically
+
+# Deploy cloud scheduler
+
+Deploy trigger for the data base
 
 ```
 
