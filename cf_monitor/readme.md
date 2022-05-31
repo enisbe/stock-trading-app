@@ -17,3 +17,20 @@ TODO:
 
 * Add gcloud CLI commands for cloud scheduler to that run periodically
 
+```
+
+ 
+export KEY=[add your key here same as the one that was used to deploy the container]
+export URL=[url db]
+ 
+gcloud scheduler jobs create http 	activities  --location us-central1 	 --time-zone "America/New_York" 	 --schedule  "1/30 9-17 * * 1-5"  --http-method GET	--uri "$URL/activities?db_key=$KEY"
+
+
+gcloud scheduler jobs create http 	history  --location us-central1 	 --time-zone "America/New_York" 	 --schedule  "0 22 * * 1-5"  --http-method GET	--uri "$URL/history?db_key=$KEY"
+
+
+
+gcloud scheduler jobs create http 	update_account  --location us-central1 	 --time-zone "America/New_York" 	 --schedule  "*/5 9-17 * * 1-5"  --http-method GET	--uri "$URL/update_account?db_key=$KEY"
+
+
+ ``` 
