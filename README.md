@@ -28,8 +28,8 @@ TODO
 TODO
 
 ## Model and Weighting
------
-![Alt text](https://github.com/enisbe/stock-trading-app/blob/main/images/cloud-run-predict%26weight.png)![image](https://user-images.githubusercontent.com/41704658/171254315-462039d8-8472-4a3c-8740-7e8e307d6ba1.png)
+
+-----<img src="./images/cloud-run-predict&weight.png" alt="Pulling Model, predicting, and providing allocation recommendations"> 
 
 
 
