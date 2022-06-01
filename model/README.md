@@ -1,5 +1,11 @@
 # Price Prediction Model
 
+# Components
+
+1. Training Files
+2. Prediction Files
+3. Strategy and backtest
+
 
 # Portfolio Strategy Model
 
