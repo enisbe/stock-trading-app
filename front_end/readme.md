@@ -1,7 +1,7 @@
 
 # Deploy front end as a streamlit container
 
-This contaier is build locally and push to the cloud contaier repository.
+This contaier is build locally and pushed to the cloud contaier repository.
 
 Step 1: Build container and test locally
 
@@ -13,7 +13,7 @@ docker container kill front_end
 ```
 
 
-Step 2: Deploy to cloud. Use glcoud SDK locally installed
+Step 2: Deploy to the cloud (Container Registry). Use glcoud SDK locally installed
 
 ``` bash
 export PROJECT_ID=[project id]
@@ -27,7 +27,7 @@ $ docker tag front_end:v1.0  gcr.io/$PROJECT_ID/front_end:v1.0
 $ docker push gcr.io/$PROJECT_ID/front_end:v1.0
 ```
 
-Step 3: Once container is push execute either locally or in cloud shell deployment command
+Step 3: Once container is pushed execute either locally or in the cloud shell the following command
 
 
 ```
