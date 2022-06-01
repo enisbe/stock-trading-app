@@ -33,7 +33,9 @@ TODO
 
 ### Portfolio Strategy Model
 
-Portfolio strategy model uses predicted prices of stocks compositing S&P 500 as the base. Detailed instruction is saved here.
+Portfolio strategy model uses predicted prices of stocks compositing S&P 500 as the base. Detailed instruction is saved in the stock-trading-app/model folder.
+
+The model output would be a basket of selected stocks along with the weight of each selected stock as shown in below chart.
 
 
 Rebalance and Monitoring
