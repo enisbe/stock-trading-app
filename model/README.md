@@ -17,7 +17,7 @@ are selected by the model to build up the portfolio.
 
 2. The trading strategy model then conduct portfolio optimization among the selected stocks and allocate the weight to each stock within the portfolio.
 
-3. The objective of the optimization model is to maximizie the sharpe ratio of the portfolio and the sum of the weights of stocks are set to 1 as the constraint.
+3. The objective of the optimization model is to maximize the sharpe ratio of the portfolio and the sum of the weights of stocks are set to 1 as the constraint.
 
 4. After the weights allocation is complete, the symbol of selected stocks along with the assigned weight is passed to the trading execution model for execution.
 
