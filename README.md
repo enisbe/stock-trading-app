@@ -14,7 +14,7 @@ This application was developed as part of Northwestern data science capston grou
 
 **Objective** 
 
->  developed an automated trading system that relies on the a time series model to make decision when to buy/sell/hold stocks. Automate the rebalancing process and execute the trades in paper trading account. Deploy fully automated application in google cloud. 
+>  The objective was to develop an end-to-end automated trading system that uses a time series model to make predictions for S&P stocks for the next market trading hour. The stock purchase / sell decisions are represented by a recommended portfolio weighting. A seperate service automates the portfolio rebalancing process and execute the trades in paper trading account. The fully automated application is deployed in google cloud. 
 
 
   
