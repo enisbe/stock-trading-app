@@ -41,7 +41,7 @@ The model output would be a basket of selected stocks along with the weight of e
 
 ### Backtesting Model
 
-Within the Portfolio opitmization model, backtesting of opitmized portfolio is conducted using historical data. The backtesting model assesses the profitability of the optimized portfolio strategy and provides a comparison between the performance of opitimized portfolio and the performance of benchmark index -- SPY. Below chart displays the result of backtesting in cumulative return term.
+Within the Portfolio opitmization model, backtesting of opitmized portfolio is conducted using historical data. The backtesting model assesses the profitability of the optimized portfolio strategy and provides a comparison between the performance of opitimized portfolio and the performance of benchmark index -- SPY. Below chart displays the result of portfolio backtesting in cumulative return term.
 
 <img src="./images/backtest.png" alt="Backtesting of Portfolio">
 
