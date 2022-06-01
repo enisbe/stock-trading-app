@@ -31,6 +31,9 @@ TODO
 
 -----<img src="./images/cloud-run-predict&weight.png" alt="Pulling Model, predicting, and providing allocation recommendations"> 
 
+### Portfolio Strategy Model
+
+Portfolio strategy model uses predicted prices of stocks compositing S&P 500 as the base. Detailed instruction is saved here.
 
 
 Rebalance and Monitoring
