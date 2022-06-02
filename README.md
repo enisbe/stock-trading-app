@@ -20,6 +20,7 @@ To develop an end-to-end automated trading system that uses a time series model 
 ------
 <img src="./images/overview.png" alt="Application Overview"> 
 ASTrA is a near real-time (~5 min latency) stock trading application that uses an NBeats (Neural basis expansion analysis for interpretable time series forecasting) deep learning machine learning algorithm to predict stock prices based on previous n periods. Stock predictions are fed into a portfolio optimization algorithm that uses Sharpe Ratios to minimize risk and maximize return. The process is as follows:
+
 1. Google Cloud Scheduler is used to call a Cloud Run http endpoint every 5 minutes. The Cloud Run application takes a list of S&P 500 ticker symbols and retrieves the last 30 days of price history at 5 min intervals. This data is upserted to a SQL database (Azure).
 2. Once the latest prices are available, the prediction model is called to calculate the expected price of each security over the next time period.
 3. The predictions are passed to a second model which calculates the top 20 stocks to acquire and percent allocation for next time period.
