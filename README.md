@@ -26,7 +26,7 @@ This application was developed as part of [Northwestern Data Science](https://sp
 
 [#northwestern](https://www.linkedin.com/search/results/all/?keywords=%23northwestern) 
 [#dataengineering](https://www.linkedin.com/search/results/all/?keywords=%23dataengineering%20northwestern%20university) 
-[#capstone]([https://www.linkedin.com/search/results/all/?keywords=%23capstone](https://www.linkedin.com/search/results/all/?keywords=capstone%20northwestern%20university)
+[#capstone](https://www.linkedin.com/search/results/all/?keywords=%23capstone%20northwestern%20university)
 
 **Objective** <a name="objective"></a>
 
