@@ -53,9 +53,21 @@ Within the Portfolio opitmization model, backtesting of opitmized portfolio is c
 <img src="./images/backtest.png" alt="Backtesting of Portfolio">
 
 
-Rebalance and Monitoring
+Rebalance and Execution
 -----
 
-TODO
+Rebalance and execution is even-driven and function as a microservices application. Any file dropped in a target google cloud storage bucket (as long formatted and named correctly) will trigger rebalancing and execution process. This process is built and deployed as a cloud function. How to deploy the function can be found in [cf_rebalance folder](https://github.com/enisbe/stock-trading-app/tree/main/cf_rebalance). The process architecture is shown below.
 
-<img src="./images/rebalance-process.png" alt="Front end GUI"> 
+<img src="./images/rebalance-process.png" alt="Rebalance Process"> 
+
+
+Monitoring and Front-End
+-----
+
+Monitoring is a service designed to track account performance. Monitoring collects the information from the broker and saves it to the database. It is deployed as a cloud-run container and with a flask front end. The deployment link is found in [cf-monitor folder](https://github.com/enisbe/stock-trading-app/tree/main/cf_monitor).
+
+<img src="./images/monitor-frontend.png" alt="Front end GUI"> 
+
+Front-end is a service deployed as a [streamlit application](https://github.com/enisbe/stock-trading-app/tree/main/front_end). It connects to the database and calculates and displays the account performance.
+
+<img src="./images/front-end.png" alt="Front end GUI"> 
