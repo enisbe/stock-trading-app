@@ -1,22 +1,22 @@
-# Stock Trading App
+# ASTrA - Automated Stock Trading App
 
-* Create local copy 
-* Recommend using virutal env 
-* run `make all` before commiting
-
-
-# Automated stock trading
+# Authors
 ----
 
+- Enis Becirbegovic - EnisBecirbegovic2022@u.northwestern.edu
+- Mark Stockwell - MarkStockwell2021@u.northwestern.edu
+- Oliver Zarate - OliverZarate2021@u.northwestern.edu
+- Siying Zhang - SiyingZhang2022@u.northwestern.edu
+- 
 **Summary**
 
-This application was developed as part of Northwestern data science capstone group project. 
+This application was developed as part of (Northwestern Data Science)[https://sps.northwestern.edu/masters/data-science/curriculum-specializations.php] capstone group project. 
 
 **Objective** 
 
 To develop an end-to-end automated trading system that uses a time series model to make predictions for S&P stocks for the next market trading hour. The stock purchase / sell decisions are represented by a recommended portfolio weighting. A seperate service automates the portfolio rebalancing process and execute the trades in paper trading account. The fully automated application is deployed in google cloud. 
 
-## Overiew
+## Overview
 ------
 <img src="./images/overview.png" alt="Application Overview"> 
 ASTrA is a near real-time (~5 min latency) stock trading application that uses an NBeats (Neural basis expansion analysis for interpretable time series forecasting) deep learning machine learning algorithm to predict stock prices based on previous n periods. Stock predictions are fed into a portfolio optimization algorithm that uses Sharpe Ratios to minimize risk and maximize return. The process is as follows:
@@ -39,9 +39,16 @@ To enable portfolio recommendations, stock data is collected on the S&P 500 ever
 - **Target Portfolio Allocation** -  Logic is included to generate an optimal portfolio using by solving for the maximum sharp ratio. For more detail on Model Training, Predictions, and target allocation setting see sections below or (https://github.com/enisbe/stock-trading-app/blob/main/model/README.md)
 - **Trade Execution** - [Enis if you want to add a few sentences here, or a link ] 
 
-## Data
+## Data Acquisition
 -----
-TODO
+<img src="./images/ETL.png" alt="Data pipelines"> 
+
+Data Acquisition ETL Workflow
+
+1. A Cloud Run application written in Python/Flask uses the yfinance python package to extract price history for all 500 S&P stocks.
+2. Price history is written to an Azure database using Microsoft ODBC drivers and pyodbc package. The process loads a temp table with a large amount of data, then loads the main table with any rows 
+3. The Cloud Run application has a /dump_table function that simplifies data distribution to the prediction model, essentially an http data source.
+4. A Cloud Scheduler job is called with a list of tickers to collect data. 10 jobs are configured to run simultaneously with 50 tickers each, completing in about 1 minute.
 
 ## Model and Weighting
 
@@ -80,3 +87,11 @@ Monitoring is a service designed to track account performance. Monitoring collec
 Front-end is a service deployed as a [streamlit application](https://github.com/enisbe/stock-trading-app/tree/main/front_end). It connects to the database and calculates and displays the account performance.
 
 <img src="./images/front-end.png" alt="Front end GUI"> 
+
+Installation and Usage
+-----
+
+* Create local copy 
+* Recommend using virutal env 
+* run `make all` before commiting
+
