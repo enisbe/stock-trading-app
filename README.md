@@ -25,8 +25,8 @@ This application was developed as part of [Northwestern Data Science](https://sp
 [Capstone](https://sps.northwestern.edu/masters/data-science/thesis-capstone.php) group project for the Data Engineering Specialization.
 
 [#northwestern](https://www.linkedin.com/search/results/all/?keywords=%23northwestern) 
-[#dataengineering](https://www.linkedin.com/search/results/all/?keywords=%23dataengineering) 
-[#capstone](https://www.linkedin.com/search/results/all/?keywords=%23capstone)
+[#dataengineering](https://www.linkedin.com/search/results/all/?keywords=%23dataengineering%20northwestern%20university) 
+[#capstone]([https://www.linkedin.com/search/results/all/?keywords=%23capstone](https://www.linkedin.com/search/results/all/?keywords=capstone%20northwestern%20university)
 
 **Objective** <a name="objective"></a>
 
