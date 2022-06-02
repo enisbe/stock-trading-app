@@ -24,7 +24,9 @@ June 2022
 This application was developed as part of [Northwestern Data Science](https://sps.northwestern.edu/masters/data-science/curriculum-specializations.php) Master of Science in Data Science program as one of the requirements for the
 [Capstone](https://sps.northwestern.edu/masters/data-science/thesis-capstone.php) group project for the Data Engineering Specialization.
 
-#northwestern #dataengineering #capstone 
+[#northwestern](https://www.linkedin.com/search/results/all/?keywords=%23northwestern) 
+[#dataengineering](https://www.linkedin.com/search/results/all/?keywords=%23dataengineering) 
+[#capstone](https://www.linkedin.com/search/results/all/?keywords=%23capstone)
 
 **Objective** <a name="objective"></a>
 
