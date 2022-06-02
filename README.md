@@ -58,7 +58,7 @@ To enable portfolio recommendations, stock data is collected on the S&P 500 ever
 Data Acquisition ETL Workflow
 
 1. A Cloud Run application written in Python/Flask uses the yfinance python package to extract price history for all 500 S&P stocks.
-2. Price history is written to an Azure database using Microsoft ODBC drivers and pyodbc package. The process loads a temp table with a large amount of data, then loads the main table with any rows 
+2. Price history is written to an Azure database using Microsoft ODBC drivers and pyodbc package. The process loads a temp table with a large amount of data, then loads the main table with any rows that are in the temp table but not the main table. In most cases only the last 5 minutes of data will inserted into the main table. This process is idempotent and fault tolerant, it allows reruns of jobs on failure or to catch up on previous day.
 3. The Cloud Run application has a /dump_table function that simplifies data distribution to the prediction model, essentially an http data source.
 4. A Cloud Scheduler job is called with a list of tickers to collect data. 10 jobs are configured to run simultaneously with 50 tickers each, completing in about 1 minute.
 
